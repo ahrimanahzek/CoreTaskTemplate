@@ -32,6 +32,9 @@ public class UserDaoJDBCImpl implements UserDao {
         Connection connection = util.getConnection();
 
         try {
+
+            connection.setAutoCommit(false);
+
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SHOW TABLES LIKE 'users'");
 
@@ -44,12 +47,17 @@ public class UserDaoJDBCImpl implements UserDao {
             if (!tableExist) {
                 statement.execute(sqlQueryCreateTable);
                 System.out.println("В базу данных добавлена таблица users");
+                connection.commit();
             } else {
                 System.out.println("Таблица users уже есть в базе данных!");
             }
 
-
         } catch (SQLException throwables) {
+            try {
+                connection.rollback();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
             throwables.printStackTrace();
         } finally {
             try {
@@ -66,6 +74,7 @@ public class UserDaoJDBCImpl implements UserDao {
         Connection connection = util.getConnection();
 
         try {
+            connection.setAutoCommit(false);
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SHOW TABLES LIKE 'users'");
 
@@ -78,11 +87,17 @@ public class UserDaoJDBCImpl implements UserDao {
             if (tableExist) {
                 statement.execute(sqlQueryDeleteTable);
                 System.out.println("Из базы данных удалена таблица users");
+                connection.commit();
             } else {
                 System.out.println("Невозможно удалить таблицу users! Ее нет в базе данных");
             }
 
         } catch (SQLException throwables) {
+            try {
+                connection.rollback();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
             throwables.printStackTrace();
         } finally {
             try {
@@ -99,6 +114,7 @@ public class UserDaoJDBCImpl implements UserDao {
         Connection connection = util.getConnection();
 
         try {
+            connection.setAutoCommit(false);
             Statement statement = connection.createStatement();
 
             String query = " insert into users (name, lastName, age)" + " values (?, ?, ?)";
@@ -111,9 +127,16 @@ public class UserDaoJDBCImpl implements UserDao {
 
             preparedStatement.execute();
 
+            connection.commit();
+
             System.out.println("User с именем – " + name + " добавлен в базу данных");
 
         } catch (SQLException throwables) {
+            try {
+                connection.rollback();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
             throwables.printStackTrace();
         } finally {
             try {
@@ -130,6 +153,7 @@ public class UserDaoJDBCImpl implements UserDao {
         Connection connection = util.getConnection();
 
         try {
+            connection.setAutoCommit(false);
             Statement statement = connection.createStatement();
 
             String query = "DELETE FROM users\n" +
@@ -141,9 +165,16 @@ public class UserDaoJDBCImpl implements UserDao {
 
             preparedStatement.execute();
 
+            connection.commit();
+
             System.out.println("Пользователь удален из базы данных");
 
         } catch (SQLException throwables) {
+            try {
+                connection.rollback();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
             throwables.printStackTrace();
         } finally {
             try {
@@ -197,12 +228,20 @@ public class UserDaoJDBCImpl implements UserDao {
         Connection connection = util.getConnection();
 
         try {
+            connection.setAutoCommit(false);
             Statement statement = connection.createStatement();
             statement.execute("TRUNCATE TABLE users");
 
             System.out.println("Таблица users была очищена!");
 
+            connection.commit();
+
         } catch (SQLException throwables) {
+            try {
+                connection.rollback();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
             throwables.printStackTrace();
         } finally {
             try {

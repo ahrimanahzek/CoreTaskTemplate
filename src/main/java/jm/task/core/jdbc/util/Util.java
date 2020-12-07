@@ -6,7 +6,7 @@ public class Util {
 
     static String URL = "jdbc:mysql://localhost:3306/testdb";
     static String USERNAME = "root";
-    static String PASSWORD = "root";
+    static String PASSWORD = "root1";
 
     Connection connection = null;
 
